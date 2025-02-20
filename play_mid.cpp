@@ -1,3 +1,5 @@
+// play_mid.cpp --- MIDファイル再生のサンプルコード
+// License: MIT
 #include <windows.h>
 #include <mmsystem.h>
 #include <string>

@@ -1,4 +1,4 @@
-// midiout.cpp --- MIDI出力のサンプルコード
+// midiout1.cpp --- MIDI出力のサンプルコード
 // License: MIT
 #include <windows.h>
 #include <mmsystem.h>

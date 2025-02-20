@@ -1,3 +1,5 @@
+// midiout2.cpp --- MIDファイル出力のサンプルコード
+// License: MIT
 #include <cstdio>
 #include <vector>
 #include <cstdint>
