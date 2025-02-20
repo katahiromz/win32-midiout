@@ -34,14 +34,14 @@ int main() {
     }
 
     int tempo = 120;
-    uint8_t num_tracks = 2;
+    uint8_t num_tracks = 3;
     uint16_t ticks_per_quarter_note = 120;
     uint32_t microseconds_per_quarter_note = 60 * 1000 * 1000 / tempo;
 
     // ヘッダーチャンク
     std::fwrite("MThd", 4, 1, fout);
     write_u32(fout, 6);
-    write_u16(fout, 1);  // フォーマット 1 に変更
+    write_u16(fout, 1);  // フォーマット 1
     write_u16(fout, num_tracks);
     write_u16(fout, ticks_per_quarter_note);
 
@@ -116,6 +116,78 @@ int main() {
             trackData.push_back(uint8_t(12 * octave + note));
             trackData.push_back(127);
             delta_time = ticks_per_quarter_note * (max_quantity - quantity) / max_quantity;
+        }
+
+        if (delta_time > 0) {
+            write_variable_length(trackData, delta_time);
+            trackData.push_back(0x80 + ch);
+            trackData.push_back(0);
+            trackData.push_back(127);
+        }
+
+        // エンドオブトラック
+        write_variable_length(trackData, delta_time);
+        trackData.push_back(0xFF);
+        trackData.push_back(0x2F);
+        trackData.push_back(0x00);
+
+        size_t trackSize = trackData.size();
+        fseek(fout, trackSizePos, SEEK_SET);
+        write_u32(fout, trackSize);
+        fseek(fout, 0, SEEK_END);
+        std::fwrite(trackData.data(), trackSize, 1, fout);
+        trackData.clear();
+    }
+
+    // トラック 3（ノート情報）
+    {
+        std::fwrite("MTrk", 4, 1, fout);
+        size_t trackSizePos = ftell(fout);
+        write_u32(fout, 0);
+
+        uint8_t ch = 1;
+        int octave = 4;
+        int quantity = 6, max_quantity = 8;
+        int delta_time = 0;
+
+        // プログラムチェンジ
+        trackData.push_back(0x00);
+        trackData.push_back(0xC0 + ch);
+        trackData.push_back(0);
+
+        // 音量設定
+        trackData.push_back(0x00);
+        trackData.push_back(0xB0 + ch);
+        trackData.push_back(0x07);
+        trackData.push_back(106);
+
+        // パンを左
+        trackData.push_back(0x00);
+        trackData.push_back(0xB0 + ch);
+        trackData.push_back(0x0A);
+        trackData.push_back(127);
+
+        std::vector<int> notes = {0, 2, 4, 5, 7, 9, 11, 12};
+
+        for (auto note : notes) {
+            write_variable_length(trackData, delta_time);
+            trackData.push_back(0x90 + ch);
+            trackData.push_back(uint8_t(12 * octave + note));
+            trackData.push_back(127);
+            delta_time = ticks_per_quarter_note * quantity / max_quantity;
+
+            write_variable_length(trackData, delta_time);
+            trackData.push_back(0x80 + ch);
+            trackData.push_back(uint8_t(12 * octave + note));
+            trackData.push_back(127);
+            delta_time = ticks_per_quarter_note * (max_quantity - quantity) / max_quantity;
+        }
+
+        if (delta_time > 0) {
+            write_variable_length(trackData, delta_time);
+            trackData.push_back(0x80 + ch);
+            trackData.push_back(0);
+            trackData.push_back(127);
         }
 
         // エンドオブトラック
