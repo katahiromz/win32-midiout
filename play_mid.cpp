@@ -1,18 +1,18 @@
 #include <windows.h>
 #include <mmsystem.h>
-#include <iostream>
+#include <string>
+#include <cstdio>
 
-bool PlayMidiFile(const std::wstring& filePath)
+// MIDファイル再生
+bool play_midi_file(const std::wstring& filePath)
 {
-    // MCIコマンド文字列
-    std::wstring command = L"play \"" + filePath + L"\" wait";
-
     // MCIコマンド実行
+    std::wstring command = L"play \"" + filePath + L"\" wait";
     MCIERROR error = mciSendStringW(command.c_str(), nullptr, 0, nullptr);
 
     // エラーチェック
-    if (error != 0) {
-        std::wcerr << L"MCI error: " << error << std::endl;
+    if (error) {
+        std::printf("MCI error: %d\n", error);
         return false;
     }
 
@@ -21,15 +21,14 @@ bool PlayMidiFile(const std::wstring& filePath)
 
 int wmain(int argc, wchar_t **argv)
 {
-    if (argc <= 1)
-    {
-        std::cout << "No file specified" << std::endl;
+    if (argc <= 1) {
+        std::printf("No file specified\n");
         return 1;
     }
 
-    // MIDファイル再生
-    std::wcout << L"Playing MID..." << std::endl;
-    PlayMidiFile(argv[1]);
+    std::printf("Playing MID...\n");
+    play_midi_file(argv[1]);
+
     return 0;
 }
 
