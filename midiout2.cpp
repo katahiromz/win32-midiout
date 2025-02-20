@@ -33,11 +33,11 @@ int main() {
     write_u16(fout, num_tracks);
     write_u16(fout, ticks_per_quarter_note);
 
-    uint8_t ch = 0; // チャンネル (0～15)
     std::vector<unsigned char> trackData;
 
     // トラック1
     {
+        uint8_t ch = 0; // チャンネル (0～15)
         int octave = 4;
         int quantity = 6, max_quantity = 8;
         int delta_time = 0;
@@ -99,13 +99,13 @@ int main() {
 
         write_u32(fout, trackData.size());
         std::fwrite(trackData.data(), trackData.size(), 1, fout);
+        trackData.clear();
     }
 
     // トラック2
     {
+        uint8_t ch = 1; // チャンネル (0～15)
         int octave = 4;
-        trackData.clear();
-        ++ch;
         int quantity = 6, max_quantity = 8;
         int delta_time = 0;
 
@@ -166,6 +166,7 @@ int main() {
 
         write_u32(fout, trackData.size());
         std::fwrite(trackData.data(), trackData.size(), 1, fout);
+        trackData.clear();
     }
 
     printf("output.mid generated.\n");
