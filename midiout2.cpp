@@ -53,6 +53,7 @@ int main() {
         size_t trackSizePos = ftell(fout);
         write_u32(fout, 0);
 
+        // テンポ設定
         trackData.push_back(0x00);
         trackData.push_back(0xFF);
         trackData.push_back(0x51);
@@ -61,11 +62,13 @@ int main() {
         trackData.push_back(uint8_t(microseconds_per_quarter_note >> 8));
         trackData.push_back(uint8_t(microseconds_per_quarter_note));
 
+        // エンドオブトラック
         trackData.push_back(0x00);
         trackData.push_back(0xFF);
         trackData.push_back(0x2F);
         trackData.push_back(0x00);
 
+        // トラックサイズとトラックデータを書き込む
         size_t trackSize = trackData.size();
         fseek(fout, trackSizePos, SEEK_SET);
         write_u32(fout, trackSize);
@@ -96,21 +99,23 @@ int main() {
         trackData.push_back(0x07);
         trackData.push_back(106);
 
-        // パンを左
+        // パンを左に
         trackData.push_back(0x00);
         trackData.push_back(0xB0 + ch);
         trackData.push_back(0x0A);
-        trackData.push_back(0);
+        trackData.push_back(0); // パンを左に設定（127は右、64は中央、0は左）
 
-        std::vector<int> notes = {0, 2, 4, 5, 7, 9, 11, 12};
+        std::vector<int> notes = {0, 2, 4, 5, 7, 9, 11, 12}; // ドレミファソラシド
 
         for (auto note : notes) {
+            // ノートオン
             write_variable_length(trackData, delta_time);
             trackData.push_back(0x90 + ch);
             trackData.push_back(uint8_t(12 * octave + note));
             trackData.push_back(127);
             delta_time = ticks_per_quarter_note * quantity / max_quantity;
 
+            // ノートオフ
             write_variable_length(trackData, delta_time);
             trackData.push_back(0x80 + ch);
             trackData.push_back(uint8_t(12 * octave + note));
@@ -118,6 +123,7 @@ int main() {
             delta_time = ticks_per_quarter_note * (max_quantity - quantity) / max_quantity;
         }
 
+        // delta_timeが残っている場合は休符を追加する
         if (delta_time > 0) {
             write_variable_length(trackData, delta_time);
             trackData.push_back(0x80 + ch);
@@ -131,6 +137,7 @@ int main() {
         trackData.push_back(0x2F);
         trackData.push_back(0x00);
 
+        // トラックサイズとトラックデータを書き込む
         size_t trackSize = trackData.size();
         fseek(fout, trackSizePos, SEEK_SET);
         write_u32(fout, trackSize);
@@ -161,21 +168,23 @@ int main() {
         trackData.push_back(0x07);
         trackData.push_back(106);
 
-        // パンを左
+        // パンを右に
         trackData.push_back(0x00);
         trackData.push_back(0xB0 + ch);
         trackData.push_back(0x0A);
-        trackData.push_back(127);
+        trackData.push_back(127); // パンを左に設定（127は右、64は中央、0は左）
 
-        std::vector<int> notes = {0, 2, 4, 5, 7, 9, 11, 12};
+        std::vector<int> notes = {0, 2, 4, 5, 7, 9, 11, 12}; // ドレミファソラシド
 
         for (auto note : notes) {
+            // ノートオン
             write_variable_length(trackData, delta_time);
             trackData.push_back(0x90 + ch);
             trackData.push_back(uint8_t(12 * octave + note));
             trackData.push_back(127);
             delta_time = ticks_per_quarter_note * quantity / max_quantity;
 
+            // ノートオフ
             write_variable_length(trackData, delta_time);
             trackData.push_back(0x80 + ch);
             trackData.push_back(uint8_t(12 * octave + note));
@@ -183,6 +192,7 @@ int main() {
             delta_time = ticks_per_quarter_note * (max_quantity - quantity) / max_quantity;
         }
 
+        // delta_timeが残っている場合は休符を追加する
         if (delta_time > 0) {
             write_variable_length(trackData, delta_time);
             trackData.push_back(0x80 + ch);
@@ -196,6 +206,7 @@ int main() {
         trackData.push_back(0x2F);
         trackData.push_back(0x00);
 
+        // トラックサイズとトラックデータを書き込む
         size_t trackSize = trackData.size();
         fseek(fout, trackSizePos, SEEK_SET);
         write_u32(fout, trackSize);
