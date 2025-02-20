@@ -87,6 +87,7 @@ int main() {
         int octave = 4;
         int quantity = 6, max_quantity = 8;
         int delta_time = 0;
+        int length = 4, default_length = 4;
 
         // プログラムチェンジ
         trackData.push_back(0x00);
@@ -113,14 +114,14 @@ int main() {
             trackData.push_back(0x90 + ch);
             trackData.push_back(uint8_t(12 * octave + note));
             trackData.push_back(127);
-            delta_time = ticks_per_quarter_note * quantity / max_quantity;
+            delta_time = ticks_per_quarter_note * default_length * quantity / length / max_quantity;
 
             // ノートオフ
             write_variable_length(trackData, delta_time);
             trackData.push_back(0x80 + ch);
             trackData.push_back(uint8_t(12 * octave + note));
             trackData.push_back(127);
-            delta_time = ticks_per_quarter_note * (max_quantity - quantity) / max_quantity;
+            delta_time = ticks_per_quarter_note * default_length * (max_quantity - quantity) / length / max_quantity;
         }
 
         // エンドオブトラック
@@ -148,6 +149,7 @@ int main() {
         int octave = 4;
         int quantity = 6, max_quantity = 8;
         int delta_time = 0;
+        int length = 4, default_length = 4;
 
         // プログラムチェンジ
         trackData.push_back(0x00);
@@ -174,14 +176,14 @@ int main() {
             trackData.push_back(0x90 + ch);
             trackData.push_back(uint8_t(12 * octave + note));
             trackData.push_back(127);
-            delta_time = ticks_per_quarter_note * quantity / max_quantity;
+            delta_time = ticks_per_quarter_note * default_length * quantity / length / max_quantity;
 
             // ノートオフ
             write_variable_length(trackData, delta_time);
             trackData.push_back(0x80 + ch);
             trackData.push_back(uint8_t(12 * octave + note));
             trackData.push_back(127);
-            delta_time = ticks_per_quarter_note * (max_quantity - quantity) / max_quantity;
+            delta_time = ticks_per_quarter_note * default_length * (max_quantity - quantity) / length / max_quantity;
         }
 
         // エンドオブトラック

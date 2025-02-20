@@ -41,15 +41,15 @@ int main() {
     send_midi_event(hMidiOut, 0xB0 + ch1, 0x0A, 127); // パンを右に設定（127は右、64は中央、0は左）
 
     // 実際に音を出す
-    int octave = 4, tempo = 120, quantity = 6, max_quantity = 8;
+    int octave = 4, tempo = 120, quantity = 6, max_quantity = 8, length = 4, default_length = 4;
     std::vector<int> notes = { 0, 2, 4, 5, 7, 9, 11, 12 }; // ドレミファソラシド
     for (int note : notes) {
         send_midi_event(hMidiOut, 0x90 + ch0, note + 12 * octave, 0x7F); // ノートオン（ベロシティ 127）
         send_midi_event(hMidiOut, 0x90 + ch1, note + 12 * octave, 0x7F); // ノートオン（ベロシティ 127）
-        Sleep(1000 * 60 * quantity / tempo / max_quantity);
+        Sleep(1000 * 60 * default_length * quantity / length / tempo / max_quantity);
         send_midi_event(hMidiOut, 0x80 + ch0, note + 12 * octave, 0x00); // ノートオフ（ベロシティ 0）
         send_midi_event(hMidiOut, 0x80 + ch1, note + 12 * octave, 0x00); // ノートオフ（ベロシティ 0）
-        Sleep(1000 * 60 * (max_quantity - quantity) / tempo / max_quantity);
+        Sleep(1000 * 60 * default_length * (max_quantity - quantity) / length / tempo / max_quantity);
     }
 
     send_midi_event(hMidiOut, 0xB0 + ch0, 0x78, 0x00); // オールサウンドオフ
