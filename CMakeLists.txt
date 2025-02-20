@@ -15,7 +15,6 @@ target_link_libraries(midiout1 PRIVATE winmm)
 
 # midiout2.exe
 add_executable(midiout2 midiout2.cpp)
-target_link_libraries(midiout2 PRIVATE winmm)
 
 # play_mid.exe
 add_executable(play_mid play_mid.cpp)
