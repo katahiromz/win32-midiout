@@ -10,8 +10,7 @@ bool play_midi_file(const std::wstring& filePath)
     std::wstring command = L"play \"" + filePath + L"\" wait";
     MCIERROR error = mciSendStringW(command.c_str(), nullptr, 0, nullptr);
 
-    // エラーチェック
-    if (error) {
+    if (error) { // エラーチェック
         std::printf("MCI error: %d\n", error);
         return false;
     }
