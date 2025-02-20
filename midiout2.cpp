@@ -123,14 +123,6 @@ int main() {
             delta_time = ticks_per_quarter_note * (max_quantity - quantity) / max_quantity;
         }
 
-        // delta_timeが残っている場合は休符を追加する
-        if (delta_time > 0) {
-            write_variable_length(trackData, delta_time);
-            trackData.push_back(0x80 + ch);
-            trackData.push_back(0);
-            trackData.push_back(127);
-        }
-
         // エンドオブトラック
         write_variable_length(trackData, delta_time);
         trackData.push_back(0xFF);
@@ -190,14 +182,6 @@ int main() {
             trackData.push_back(uint8_t(12 * octave + note));
             trackData.push_back(127);
             delta_time = ticks_per_quarter_note * (max_quantity - quantity) / max_quantity;
-        }
-
-        // delta_timeが残っている場合は休符を追加する
-        if (delta_time > 0) {
-            write_variable_length(trackData, delta_time);
-            trackData.push_back(0x80 + ch);
-            trackData.push_back(0);
-            trackData.push_back(127);
         }
 
         // エンドオブトラック
