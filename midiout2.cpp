@@ -45,7 +45,7 @@ int main() {
         // トラックチャンク
         std::fwrite("MTrk", 4, 1, fout);
 
-        // テンポ設定
+        // テンポ設定は最初のトラックに書き込む
         trackData.push_back(0x00);
         trackData.push_back(0xFF);
         trackData.push_back(0x51);
@@ -111,15 +111,6 @@ int main() {
 
         // トラックチャンク
         std::fwrite("MTrk", 4, 1, fout);
-
-        // テンポ設定
-        trackData.push_back(0x00);
-        trackData.push_back(0xFF);
-        trackData.push_back(0x51);
-        trackData.push_back(0x03);
-        trackData.push_back(uint8_t(microseconds_per_quarter_note >> 16));
-        trackData.push_back(uint8_t(microseconds_per_quarter_note >> 8));
-        trackData.push_back(uint8_t(microseconds_per_quarter_note));
 
         // プログラムチェンジイベント (音色変更)
         trackData.push_back(0x00); // デルタタイム
