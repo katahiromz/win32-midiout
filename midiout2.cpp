@@ -40,6 +40,7 @@ int main() {
     {
         int octave = 4;
         int quantity = 6, max_quantity = 8;
+        int delta_time = 0;
 
         // トラックチャンク
         std::fwrite("MTrk", 4, 1, fout);
@@ -72,21 +73,23 @@ int main() {
 
         std::vector<int> notes = {0, 2, 4, 5, 7, 9, 11, 12}; // ドレミファソラシド
         for (auto note : notes) {
-            trackData.push_back(0x00); // デルタタイム
+            trackData.push_back(delta_time); // デルタタイム
             trackData.push_back(0x90 + ch); // ノートオン
             trackData.push_back(uint8_t(12 * octave + note)); // ノートナンバー
             trackData.push_back(127); // ベロシティ
+            delta_time = ticks_per_quarter_note * quantity / max_quantity;
 
-            trackData.push_back(ticks_per_quarter_note * quantity / max_quantity); // デルタタイム (4分音符)
+            trackData.push_back(delta_time); // デルタタイム (4分音符)
             trackData.push_back(0x80 + ch); // ノートオフ
             trackData.push_back(uint8_t(12 * octave + note)); // ノートナンバー
             trackData.push_back(127); // ベロシティ
-
-            trackData.push_back(ticks_per_quarter_note * (max_quantity - quantity) / max_quantity); // デルタタイム (4分音符)
-            trackData.push_back(0x80 + ch); // ノートオフ
-            trackData.push_back(uint8_t(12 * octave + note)); // ノートナンバー
-            trackData.push_back(127); // ベロシティ
+            delta_time = ticks_per_quarter_note * (max_quantity - quantity) / max_quantity;
         }
+
+        trackData.push_back(delta_time); // デルタタイム (4分音符)
+        trackData.push_back(0x80 + ch); // ノートオフ
+        trackData.push_back(uint8_t(0)); // ノートナンバー
+        trackData.push_back(127); // ベロシティ
 
         // エンドオブトラック
         trackData.push_back(0x00);
@@ -104,6 +107,7 @@ int main() {
         trackData.clear();
         ++ch;
         int quantity = 6, max_quantity = 8;
+        int delta_time = 0;
 
         // トラックチャンク
         std::fwrite("MTrk", 4, 1, fout);
@@ -136,21 +140,23 @@ int main() {
 
         std::vector<int> notes = {0, 2, 4, 5, 7, 9, 11, 12}; // ドレミファソラシド
         for (auto note : notes) {
-            trackData.push_back(0x00); // デルタタイム
+            trackData.push_back(delta_time); // デルタタイム
             trackData.push_back(0x90 + ch); // ノートオン
             trackData.push_back(uint8_t(12 * octave + note)); // ノートナンバー
             trackData.push_back(127); // ベロシティ
+            delta_time = ticks_per_quarter_note * quantity / max_quantity;
 
-            trackData.push_back(ticks_per_quarter_note * quantity / max_quantity); // デルタタイム (4分音符)
+            trackData.push_back(delta_time); // デルタタイム (4分音符)
             trackData.push_back(0x80 + ch); // ノートオフ
             trackData.push_back(uint8_t(12 * octave + note)); // ノートナンバー
             trackData.push_back(127); // ベロシティ
-
-            trackData.push_back(ticks_per_quarter_note * (max_quantity - quantity) / max_quantity); // デルタタイム (4分音符)
-            trackData.push_back(0x80 + ch); // ノートオフ
-            trackData.push_back(uint8_t(12 * octave + note)); // ノートナンバー
-            trackData.push_back(127); // ベロシティ
+            delta_time = ticks_per_quarter_note * (max_quantity - quantity) / max_quantity;
         }
+
+        trackData.push_back(delta_time); // デルタタイム (4分音符)
+        trackData.push_back(0x80 + ch); // ノートオフ
+        trackData.push_back(uint8_t(0)); // ノートナンバー
+        trackData.push_back(127); // ベロシティ
 
         // エンドオブトラック
         trackData.push_back(0x00);
